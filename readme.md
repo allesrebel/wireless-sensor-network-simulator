@@ -5,38 +5,38 @@ Our goal is to make a simulation of a tracking network that uses sensors and a w
 To run OmNet++ and Castalia, this code was run using WSL on Windows running an Ubuntu flavor (22)
 
 ## Update repos
-$ apt update
+* apt-add-repository universe
+* apt update
 
 ## install the dependencies – OmNet++ and Castalia 
-$ apt install wget build-essential gcc g++ bison flex perl python-is-python3 python3 libqt5opengl5-dev tcl-dev tk-dev libxml2-dev zlib1g-dev default-jre doxygen graphviz libwebkitgtk-6.0-4 libgtk2.0-0 python2
-
-## If needed, add extra GIS repo – the osg related installation may fail – just ignore it
-## install osgearth development package and OpenSceneGraph
-apt install software-properties-common
-apt-add-repository universe
-apt update
-apt install openmpi-bin libopenmpi-dev
+* apt install wget build-essential gcc g++ bison flex perl python-is-python3 python3 libqt5opengl5-dev tcl-dev tk-dev libxml2-dev zlib1g-dev default-jre doxygen graphviz libwebkitgtk-6.0-4 libgtk2.0-0 python2
+* apt install software-properties-common
+* apt install openmpi-bin libopenmpi-dev
 
 ## Switch to OmNet++
-cd omnetpp
-### If you choose to use OpenSceneGraph (only available on ubuntu 20)
-apt install libopenscenegraph-dev libgeos-dev
-sed -i 's/^#OSGEARTH_LIBS=/OSGEARTH_LIBS=" -losgEarth -losgEarthUtil -lgeos_c "/' configure.user
-### If you don't care (if you're using ubuntu 22, and not 20 like recommended)
-sed -i 's/^WITH_OSG=yes/WITH_OSG=no/' configure.user
-sed -i 's/^WITH_OSGEARTH=yes/WITH_OSGEARTH=no/' configure.user
-## Compile
-source setenv
-./configure
-make -j
+* cd omnetpp
 
-# Clone Castalia
-git submodule update
-cd Castalia/Castalia
+### If you choose to use OpenSceneGraph (only available on ubuntu 20)
+* apt install libopenscenegraph-dev libgeos-dev
+* sed -i 's/^#OSGEARTH_LIBS=/OSGEARTH_LIBS=" -losgEarth -losgEarthUtil -lgeos_c "/' configure.user
+
+### If you don't care (if you're using ubuntu 22, and not 20 like recommended)
+* sed -i 's/^WITH_OSG=yes/WITH_OSG=no/' configure.user
+* sed -i 's/^WITH_OSGEARTH=yes/WITH_OSGEARTH=no/' configure.user
+
+## Compile
+* source setenv
+* ./configure
+* make -j
+
+# Go back to Root Dir & Clone Castalia
+* cd ..
+* git submodule update
 
 ## Build Castalia
-./makemake
-make -j
+* cd Castalia/Castalia
+* ./makemake
+* make -j
 
 ## You're Done!
 omnetpp to run the ide, you can check out the aloha sample in the omnetpp directory. You could even run one of the Castaila examples in the command line and generate data!
