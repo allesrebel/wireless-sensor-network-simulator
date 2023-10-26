@@ -29,6 +29,10 @@ To run OmNet++ and Castalia, this code was run using WSL on Windows running an U
 * ./configure
 * make -j
 
+### Optional! Add to your bash / zsh profile
+* [ -f "<git root dir>/omnetpp/setenv" ] && source "<git root dir>/omnetpp/setenv
+Or just manually source when you want to get the environment going
+
 # Go back to Root Dir & Clone Castalia
 * cd ..
 * git submodule update
