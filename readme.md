@@ -9,8 +9,8 @@ To run OmNet++ and Castalia, this code was run using WSL on Windows running an U
 * apt update
 
 ## install the dependencies – OmNet++ and Castalia 
-* apt install wget build-essential gcc g++ bison flex perl python-is-python3 python3 libqt5opengl5-dev tcl-dev tk-dev libxml2-dev zlib1g-dev default-jre doxygen graphviz libwebkitgtk-6.0-4 libgtk2.0-0 python2
 * apt install software-properties-common
+* apt install wget build-essential gcc g++ bison flex perl python-is-python3 python3 libqt5opengl5-dev tcl-dev tk-dev libxml2-dev zlib1g-dev default-jre doxygen graphviz libwebkitgtk-6.0-4 libgtk2.0-0 python2
 * apt install openmpi-bin libopenmpi-dev
 
 ## Switch to OmNet++
@@ -43,4 +43,4 @@ Or just manually source when you want to get the environment going
 * make -j
 
 ## You're Done!
-omnetpp to run the ide, you can check out the aloha sample in the omnetpp directory. You could even run one of the Castaila examples in the command line and generate data!
+omnetpp to run the ide, you can check out the aloha sample in the omnetpp directory. You could even run one of the Castalia examples in the command line and generate data!
