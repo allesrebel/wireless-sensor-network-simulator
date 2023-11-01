@@ -13,16 +13,19 @@ To run OmNet++ and Castalia, this code was run using WSL on Windows running an U
 * apt install wget build-essential gcc g++ bison flex perl python-is-python3 python3 libqt5opengl5-dev tcl-dev tk-dev libxml2-dev zlib1g-dev default-jre doxygen graphviz libwebkitgtk-6.0-4 libgtk2.0-0 python2
 * apt install openmpi-bin libopenmpi-dev
 
+## Clone project
+* git clone --recurse-submodules <url>
+
 ## Switch to OmNet++
 * cd omnetpp
 
 ### If you choose to use OpenSceneGraph (only available on ubuntu 20)
 * apt install libopenscenegraph-dev libgeos-dev
-* sed -i 's/^#OSGEARTH_LIBS=/OSGEARTH_LIBS=" -losgEarth -losgEarthUtil -lgeos_c "/' configure.user
+* sed -i 's/^#OSGEARTH_LIBS=/OSGEARTH_LIBS=" -losgEarth -losgEarthUtil -lgeos_c "/' configure.user.dist
 
 ### If you don't care (if you're using ubuntu 22, and not 20 like recommended)
-* sed -i 's/^WITH_OSG=yes/WITH_OSG=no/' configure.user
-* sed -i 's/^WITH_OSGEARTH=yes/WITH_OSGEARTH=no/' configure.user
+* sed -i 's/^WITH_OSG=yes/WITH_OSG=no/' configure.user.dist
+* sed -i 's/^WITH_OSGEARTH=yes/WITH_OSGEARTH=no/' configure.user.dist
 
 ## Compile
 * source setenv
@@ -38,7 +41,7 @@ Or just manually source when you want to get the environment going
 * git submodule update
 
 ## Build Castalia
-* cd Castalia/Castalia
+* cd Castalia
 * ./makemake
 * make -j
 
