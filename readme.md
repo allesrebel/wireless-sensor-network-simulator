@@ -14,9 +14,10 @@ To run OmNet++ and Castalia, this code was run using WSL on Windows running an U
 * apt install openmpi-bin libopenmpi-dev
 
 ## Clone project
-* git clone --recurse-submodules <url>
+* git clone --recurse-submodules (this repos url)
 
 ## Switch to OmNet++
+* cd wireless-sensor-network-simulator
 * cd omnetpp
 
 ### If you choose to use OpenSceneGraph (only available on ubuntu 20)
