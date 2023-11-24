@@ -1,0 +1,4 @@
+#!/bin/sh
+cd `dirname $0`
+../src/cs696 -n .:../src $*
+# for shared lib, use: opp_run -l ../src/cs696 -n .:../src $*

@@ -1,0 +1,784 @@
+file 76193 1700852951                                           
+version 3
+run Grid-0-20231124-11:06:39-11800
+attr configname Grid
+attr datetime 20231124-11:06:39
+attr datetimef 20231124-110639
+attr experiment Grid
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network Grid
+attr processid 11800
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+config image-path ../../inet4.5/images
+config network Grid
+config *.visualizer.*.mobilityVisualizer.displayMobility true
+config *.visualizer.*.mobilityVisualizer.displayPositions true
+config *.visualizer.*.mobilityVisualizer.displayOrientations true
+config *.visualizer.*.mobilityVisualizer.displayVelocities true
+config *.visualizer.*.mobilityVisualizer.displayMovementTrails true
+config **.constraintAreaMinX 0m
+config **.constraintAreaMaxX 500m
+config **.constraintAreaMinY 0m
+config **.constraintAreaMaxY 500m
+config **.constraintAreaMinZ 0m
+config **.constraintAreaMaxZ 0m
+config *.radioMedium.backgroundNoise.typename IsotropicScalarBackgroundNoise
+config *.radioMedium.backgroundNoise.power -110dBm
+config *.target*.mobility.typename GaussMarkovMobility
+config *.target*.mobility.speed 20mps
+config *.target*.mobility.margin 0m
+config *.target*.mobility.speedStdDev 4mps
+config *.target*.mobility.angleStdDev 0.2rad
+config *.target*.mobility.alpha 0.5
+config *.host[*].mobility.typename StaticGridMobility
+config *.host[*].mobility.numHosts 9
+
+vector 0 Grid.host[0].wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 1 Grid.host[0].wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 2 Grid.host[0].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 3 Grid.host[0].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 4 Grid.host[0].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 5 Grid.host[1].wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 6 Grid.host[1].wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 7 Grid.host[1].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 8 Grid.host[1].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 9 Grid.host[1].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 10 Grid.host[2].wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 11 Grid.host[2].wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 12 Grid.host[2].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 13 Grid.host[2].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 14 Grid.host[2].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 15 Grid.host[3].wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 16 Grid.host[3].wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 17 Grid.host[3].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 18 Grid.host[3].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 19 Grid.host[3].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 20 Grid.host[4].wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 21 Grid.host[4].wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 22 Grid.host[4].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 23 Grid.host[4].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 24 Grid.host[4].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 25 Grid.host[5].wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 26 Grid.host[5].wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 27 Grid.host[5].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 28 Grid.host[5].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 29 Grid.host[5].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 30 Grid.host[6].wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 31 Grid.host[6].wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 32 Grid.host[6].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 33 Grid.host[6].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 34 Grid.host[6].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 35 Grid.host[7].wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 36 Grid.host[7].wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 37 Grid.host[7].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 38 Grid.host[7].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 39 Grid.host[7].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 40 Grid.host[8].wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 41 Grid.host[8].wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 42 Grid.host[8].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 43 Grid.host[8].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 44 Grid.host[8].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 45 Grid.target.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 46 Grid.target.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 47 Grid.target.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 48 Grid.target.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 49 Grid.target.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 50 Grid.host[0].energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 51 Grid.host[1].energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 52 Grid.host[2].energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 53 Grid.host[3].energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 54 Grid.host[4].energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 55 Grid.host[5].energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 56 Grid.host[6].energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 57 Grid.host[7].energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 58 Grid.host[8].energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 59 Grid.target.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 60 Grid.host[0].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 61 Grid.host[0].wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 62 Grid.host[1].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 63 Grid.host[1].wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 64 Grid.host[2].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 65 Grid.host[2].wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 66 Grid.host[3].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 67 Grid.host[3].wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 68 Grid.host[4].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 69 Grid.host[4].wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 70 Grid.host[5].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 71 Grid.host[5].wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 72 Grid.host[6].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 73 Grid.host[6].wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 74 Grid.host[7].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 75 Grid.host[7].wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 76 Grid.host[8].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 77 Grid.host[8].wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 78 Grid.target.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 79 Grid.target.wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 80 Grid.host[0].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 81 Grid.host[1].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 82 Grid.host[2].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 83 Grid.host[3].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 84 Grid.host[4].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 85 Grid.host[5].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 86 Grid.host[6].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 87 Grid.host[7].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 88 Grid.host[8].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 89 Grid.target.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+0	23829 45 0 0 0 0 5 0 0 0 0
+1	23874 45 0 0 0 0 5 0 0 0 0
+2	23919 9 0 0 0 0 1 0 0 0 0
+3	23928 9 0 0 0 0 1 0 0 0 0
+4	23937 9 0 0 0 0 1 0 0 0 0
+5	23946 45 0 0 0 0 5 0 0 0 0
+6	23991 45 0 0 0 0 5 0 0 0 0
+7	24036 9 0 0 0 0 1 0 0 0 0
+8	24045 9 0 0 0 0 1 0 0 0 0
+9	24054 9 0 0 0 0 1 0 0 0 0
+10	24063 50 0 0 0 0 5 0 0 0 0
+11	24113 50 0 0 0 0 5 0 0 0 0
+12	24163 10 0 0 0 0 1 0 0 0 0
+13	24173 10 0 0 0 0 1 0 0 0 0
+14	24183 10 0 0 0 0 1 0 0 0 0
+15	24193 50 0 0 0 0 5 0 0 0 0
+16	24243 50 0 0 0 0 5 0 0 0 0
+17	24293 10 0 0 0 0 1 0 0 0 0
+18	24303 10 0 0 0 0 1 0 0 0 0
+19	24313 10 0 0 0 0 1 0 0 0 0
+20	24323 50 0 0 0 0 5 0 0 0 0
+21	24373 50 0 0 0 0 5 0 0 0 0
+22	24423 10 0 0 0 0 1 0 0 0 0
+23	24433 10 0 0 0 0 1 0 0 0 0
+24	24443 10 0 0 0 0 1 0 0 0 0
+25	24453 50 0 0 0 0 5 0 0 0 0
+26	24503 50 0 0 0 0 5 0 0 0 0
+27	24553 10 0 0 0 0 1 0 0 0 0
+28	24563 10 0 0 0 0 1 0 0 0 0
+29	24573 10 0 0 0 0 1 0 0 0 0
+30	24583 50 0 0 0 0 5 0 0 0 0
+31	24633 50 0 0 0 0 5 0 0 0 0
+32	24683 10 0 0 0 0 1 0 0 0 0
+33	24693 10 0 0 0 0 1 0 0 0 0
+34	24703 10 0 0 0 0 1 0 0 0 0
+35	24713 50 0 0 0 0 5 0 0 0 0
+36	24763 50 0 0 0 0 5 0 0 0 0
+37	24813 10 0 0 0 0 1 0 0 0 0
+38	24823 10 0 0 0 0 1 0 0 0 0
+39	24833 10 0 0 0 0 1 0 0 0 0
+40	24843 50 0 0 0 0 5 0 0 0 0
+41	24893 50 0 0 0 0 5 0 0 0 0
+42	24943 10 0 0 0 0 1 0 0 0 0
+43	24953 10 0 0 0 0 1 0 0 0 0
+44	24963 10 0 0 0 0 1 0 0 0 0
+45	24973 50 0 0 0 0 5 0 0 0 0
+46	25023 50 0 0 0 0 5 0 0 0 0
+47	25073 10 0 0 0 0 1 0 0 0 0
+48	25083 10 0 0 0 0 1 0 0 0 0
+49	25093 10 0 0 0 0 1 0 0 0 0
+50	25103 54 0 0 0 0 5 0 5e-06 5e-06 2.5e-11
+51	25157 54 0 0 0 0 5 0 5e-06 5e-06 2.5e-11
+52	25211 54 0 0 0 0 5 0 5e-06 5e-06 2.5e-11
+53	25265 54 0 0 0 0 5 0 5e-06 5e-06 2.5e-11
+54	25319 54 0 0 0 0 5 0 5e-06 5e-06 2.5e-11
+55	25373 54 0 0 0 0 5 0 5e-06 5e-06 2.5e-11
+56	25427 54 0 0 0 0 5 0 5e-06 5e-06 2.5e-11
+57	25481 54 0 0 0 0 5 0 5e-06 5e-06 2.5e-11
+58	25535 54 0 0 0 0 5 0 5e-06 5e-06 2.5e-11
+59	25589 54 0 0 0 0 5 0 5e-06 5e-06 2.5e-11
+60	25643 30 0 0 0 0 3 0 2 2 4
+61	25673 44 0 0 0 0 4 0 5e-06 5e-06 2.5e-11
+62	25717 30 0 0 0 0 3 0 2 2 4
+63	25747 44 0 0 0 0 4 0 5e-06 5e-06 2.5e-11
+64	25791 30 0 0 0 0 3 0 2 2 4
+65	25821 44 0 0 0 0 4 0 5e-06 5e-06 2.5e-11
+66	25865 30 0 0 0 0 3 0 2 2 4
+67	25895 44 0 0 0 0 4 0 5e-06 5e-06 2.5e-11
+68	25939 30 0 0 0 0 3 0 2 2 4
+69	25969 44 0 0 0 0 4 0 5e-06 5e-06 2.5e-11
+70	26013 30 0 0 0 0 3 0 2 2 4
+71	26043 44 0 0 0 0 4 0 5e-06 5e-06 2.5e-11
+72	26087 30 0 0 0 0 3 0 2 2 4
+73	26117 44 0 0 0 0 4 0 5e-06 5e-06 2.5e-11
+74	26161 30 0 0 0 0 3 0 2 2 4
+75	26191 44 0 0 0 0 4 0 5e-06 5e-06 2.5e-11
+76	26235 30 0 0 0 0 3 0 2 2 4
+77	26265 44 0 0 0 0 4 0 5e-06 5e-06 2.5e-11
+78	26309 30 0 0 0 0 3 0 2 2 4
+79	26339 44 0 0 0 0 4 0 5e-06 5e-06 2.5e-11
+80	26383 10 0 0 0 0 1 1 1 1 1
+81	26393 10 0 0 0 0 1 1 1 1 1
+82	26403 10 0 0 0 0 1 1 1 1 1
+83	26413 10 0 0 0 0 1 1 1 1 1
+84	26423 10 0 0 0 0 1 1 1 1 1
+85	26433 10 0 0 0 0 1 1 1 1 1
+86	26443 10 0 0 0 0 1 1 1 1 1
+87	26453 10 0 0 0 0 1 1 1 1 1
+88	26463 10 0 0 0 0 1 1 1 1 1
+89	26473 10 0 0 0 0 1 1 1 1 1
+vector 90 Grid.host[0].wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 91 Grid.host[0].wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 92 Grid.host[1].wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 93 Grid.host[1].wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 94 Grid.host[2].wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 95 Grid.host[2].wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 96 Grid.host[3].wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 97 Grid.host[3].wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 98 Grid.host[4].wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 99 Grid.host[4].wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 100 Grid.host[5].wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 101 Grid.host[5].wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 102 Grid.host[6].wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 103 Grid.host[6].wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 104 Grid.host[7].wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 105 Grid.host[7].wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 106 Grid.host[8].wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 107 Grid.host[8].wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 108 Grid.target.wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 109 Grid.target.wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+90	30721 2196 155 155 0.1 15.5 155 0 0 0 0
+91	32917 2196 155 155 0.1 15.5 155 0 0 0 0
+92	35113 2196 155 155 0.1 15.5 155 0 0 0 0
+93	37309 2196 155 155 0.1 15.5 155 0 0 0 0
+94	39505 2196 155 155 0.1 15.5 155 0 0 0 0
+95	41701 2196 155 155 0.1 15.5 155 0 0 0 0
+96	43897 2196 155 155 0.1 15.5 155 0 0 0 0
+97	46093 2196 155 155 0.1 15.5 155 0 0 0 0
+98	48289 2196 155 155 0.1 15.5 155 0 0 0 0
+99	50485 2196 155 155 0.1 15.5 155 0 0 0 0
+100	52681 2351 155 155 0.1 15.5 155 0 0 0 0
+101	55032 2351 155 155 0.1 15.5 155 0 0 0 0
+102	57383 2351 155 155 0.1 15.5 155 0 0 0 0
+103	59734 2351 155 155 0.1 15.5 155 0 0 0 0
+104	62085 2351 155 155 0.1 15.5 155 0 0 0 0
+105	64436 2351 155 155 0.1 15.5 155 0 0 0 0
+106	66787 2351 155 155 0.1 15.5 155 0 0 0 0
+107	69138 2351 155 155 0.1 15.5 155 0 0 0 0
+108	71489 2351 155 155 0.1 15.5 155 0 0 0 0
+109	73840 2351 155 155 0.1 15.5 155 0 0 0 0
+
