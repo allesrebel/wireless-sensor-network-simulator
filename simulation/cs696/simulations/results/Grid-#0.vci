@@ -1,9 +1,9 @@
-file 76193 1700852951                                           
+file 26485 1700853591                                           
 version 3
-run Grid-0-20231124-11:06:39-11800
+run Grid-0-20231124-11:19:49-27768
 attr configname Grid
-attr datetime 20231124-11:06:39
-attr datetimef 20231124-110639
+attr datetime 20231124-11:19:49
+attr datetimef 20231124-111949
 attr experiment Grid
 attr inifile omnetpp.ini
 attr iterationvars ""
@@ -11,7 +11,7 @@ attr iterationvarsd ""
 attr iterationvarsf ""
 attr measurement ""
 attr network Grid
-attr processid 11800
+attr processid 27768
 attr repetition 0
 attr replication #0
 attr resultdir results
@@ -641,144 +641,4 @@ attr title "Radio reception state"
 87	26453 10 0 0 0 0 1 1 1 1 1
 88	26463 10 0 0 0 0 1 1 1 1 1
 89	26473 10 0 0 0 0 1 1 1 1 1
-vector 90 Grid.host[0].wlan[0].queue outgoingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPulled)
-attr title "outgoing datarate"
-attr unit bps
-vector 91 Grid.host[0].wlan[0].queue incomingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPushStarted)
-attr title "incoming datarate"
-attr unit bps
-vector 92 Grid.host[1].wlan[0].queue outgoingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPulled)
-attr title "outgoing datarate"
-attr unit bps
-vector 93 Grid.host[1].wlan[0].queue incomingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPushStarted)
-attr title "incoming datarate"
-attr unit bps
-vector 94 Grid.host[2].wlan[0].queue outgoingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPulled)
-attr title "outgoing datarate"
-attr unit bps
-vector 95 Grid.host[2].wlan[0].queue incomingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPushStarted)
-attr title "incoming datarate"
-attr unit bps
-vector 96 Grid.host[3].wlan[0].queue outgoingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPulled)
-attr title "outgoing datarate"
-attr unit bps
-vector 97 Grid.host[3].wlan[0].queue incomingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPushStarted)
-attr title "incoming datarate"
-attr unit bps
-vector 98 Grid.host[4].wlan[0].queue outgoingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPulled)
-attr title "outgoing datarate"
-attr unit bps
-vector 99 Grid.host[4].wlan[0].queue incomingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPushStarted)
-attr title "incoming datarate"
-attr unit bps
-vector 100 Grid.host[5].wlan[0].queue outgoingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPulled)
-attr title "outgoing datarate"
-attr unit bps
-vector 101 Grid.host[5].wlan[0].queue incomingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPushStarted)
-attr title "incoming datarate"
-attr unit bps
-vector 102 Grid.host[6].wlan[0].queue outgoingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPulled)
-attr title "outgoing datarate"
-attr unit bps
-vector 103 Grid.host[6].wlan[0].queue incomingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPushStarted)
-attr title "incoming datarate"
-attr unit bps
-vector 104 Grid.host[7].wlan[0].queue outgoingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPulled)
-attr title "outgoing datarate"
-attr unit bps
-vector 105 Grid.host[7].wlan[0].queue incomingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPushStarted)
-attr title "incoming datarate"
-attr unit bps
-vector 106 Grid.host[8].wlan[0].queue outgoingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPulled)
-attr title "outgoing datarate"
-attr unit bps
-vector 107 Grid.host[8].wlan[0].queue incomingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPushStarted)
-attr title "incoming datarate"
-attr unit bps
-vector 108 Grid.target.wlan[0].queue outgoingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPulled)
-attr title "outgoing datarate"
-attr unit bps
-vector 109 Grid.target.wlan[0].queue incomingDataRate:vector ETV
-attr interpolationmode linear
-attr recordingmode vector
-attr source throughput(packetPushStarted)
-attr title "incoming datarate"
-attr unit bps
-90	30721 2196 155 155 0.1 15.5 155 0 0 0 0
-91	32917 2196 155 155 0.1 15.5 155 0 0 0 0
-92	35113 2196 155 155 0.1 15.5 155 0 0 0 0
-93	37309 2196 155 155 0.1 15.5 155 0 0 0 0
-94	39505 2196 155 155 0.1 15.5 155 0 0 0 0
-95	41701 2196 155 155 0.1 15.5 155 0 0 0 0
-96	43897 2196 155 155 0.1 15.5 155 0 0 0 0
-97	46093 2196 155 155 0.1 15.5 155 0 0 0 0
-98	48289 2196 155 155 0.1 15.5 155 0 0 0 0
-99	50485 2196 155 155 0.1 15.5 155 0 0 0 0
-100	52681 2351 155 155 0.1 15.5 155 0 0 0 0
-101	55032 2351 155 155 0.1 15.5 155 0 0 0 0
-102	57383 2351 155 155 0.1 15.5 155 0 0 0 0
-103	59734 2351 155 155 0.1 15.5 155 0 0 0 0
-104	62085 2351 155 155 0.1 15.5 155 0 0 0 0
-105	64436 2351 155 155 0.1 15.5 155 0 0 0 0
-106	66787 2351 155 155 0.1 15.5 155 0 0 0 0
-107	69138 2351 155 155 0.1 15.5 155 0 0 0 0
-108	71489 2351 155 155 0.1 15.5 155 0 0 0 0
-109	73840 2351 155 155 0.1 15.5 155 0 0 0 0
 
