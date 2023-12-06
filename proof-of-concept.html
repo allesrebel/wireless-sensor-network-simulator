@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>WSN PoC Simulator!</title>
+	<style>
+		#container {
+			display: flex;
+			height: 100vh;
+		}
+
+		#grid {
+			width: 820px;
+    		height: 660px;
+			display: grid;
+			grid-template-columns: repeat(40, 20px);
+			flex: 1;
+			overflow: auto;
+		}
+
+		#log {
+			flex: 1;
+			padding: 10px;
+			border-left: 1px solid black;
+			overflow-y: auto; /* To make it scrollable if there are many logs */
+			max-height: 100vh;
+		}
+		
+		#log ul {
+			list-style-type: none;
+			padding: 0;
+		}
+
+		.cell {
+			width: 20px;
+			height: 20px;
+			margin: 0; /* Ensure no margin */
+			border: 1px solid black;
+			cursor: pointer;
+			display: flex;           /* Enable flexbox */
+			justify-content: center; /* Center content horizontally */
+			align-items: center;     /* Center content vertically */
+		}
+
+		.cell[data-type="1"] {
+			background-color: white;
+		}
+
+		.cell[data-type="0"] {
+			background-color: black;
+		}
+
+		.cell[data-type="start"] {
+			background-color: green;
+		}
+
+		.cell[data-type="end"] {
+			background-color: red;
+		}
+
+		.cell[data-path="true"] {
+			background-color: blue;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="container">
+		<div id="grid"></div>
+		<div id="log">
+			<div id="controls">
+				<button id="startSimulation">Run Simulation</button>
+				<button id="setDefaultStartEnd">Default Starting (5,5) / Ending (38,28)</button>
+				<button id="findPath">Find Ideal Path (Dijkstra)</button>
+				<br>
+				<button onclick="generateObstacles(0.10)">10% Obstacles</button>
+				<button onclick="generateObstacles(0.20)">20% Obstacles</button>
+				<button onclick="generateSensors()">Grid of Sensors</button>
+				<br>
+				<button id="reset">Reset Everything</button>
+				<button id="resetStart">Reset Start</button>
+				<button id="resetEnd">Reset End</button>
+			
+				<br>
+				<button id="exportGrid">Export Grid to File</button>
+				<input type="file" id="fileInput">
+				<button id="importGrid">Import Grid from File</button>
+			</div>
+			<h3>Event Log <button id="exportLog">Export Log</button></h3>
+			<ul></ul>
+		</div>
+	</div>
+
+	<script>
+		const rows = 30;
+		const cols = 40;
+		let grid = Array(rows).fill().map(() => Array(cols).fill(1));
+		// Note: first item is orientation, second item is power
+		let sensors = Array(rows).fill().map(() => Array(cols).fill([ 0, 0 ]));
+
+		// Target Details
+		let start = null;
+		let end = null;
+		let direction = 0;
+		let memory = Array(rows).fill().map(() => Array(cols).fill(-1));
+
+		function renderGrid() {
+			const gridDiv = document.getElementById('grid');
+			gridDiv.innerHTML = '';
+
+			for (let i = 0; i < rows; i++) {
+				for (let j = 0; j < cols; j++) {
+					const cell = document.createElement('div');
+					cell.className = 'cell';
+					cell.dataset.type = grid[i][j];
+					cell.dataset.row = i;
+					cell.dataset.col = j;
+					if (start && start[0] === i && start[1] === j) {
+						cell.dataset.type = 'start';
+						cell.innerHTML = getArrowForDirection(direction);
+					}
+					if (end && end[0] === i && end[1] === j) {
+						cell.dataset.type = 'end';
+						cell.innerHTML = 'X';
+					}
+					if ( cell.dataset.type === 'sensor' )
+					{
+						// Use sensors to get direction arrow
+						cell.innerHTML = getArrowForDirection(sensors[i][j][0]);
+					}
+					cell.onclick = () => toggleCell(i, j);
+					gridDiv.appendChild(cell);
+				}
+			}
+		}
+
+		// Function to handle scanning for the target for this particular
+		// Sensor Node
+		function scanAhead(x, y, dx, dy) {
+			while (true) {
+				x += dx;
+				y += dy;
+
+				if (x < 0 || x >= cols || y < 0 || y >= rows) {
+					// Out of bounds
+					break;
+				}
+
+				if (grid[y][x] === 0) {
+					// Obstruction detected
+					memory[y][x] = 0;
+					break;
+				} else {
+					memory[y][x] = 1; // open
+				}
+			}
+		}
+
+		// Simulation performs a tick across all sensors
+		// they awake, utilize a sensor, and based on their detection
+		// utilize additional power to transmit information
+		function startSimulation() {
+			// Check preconditions
+			if(!start || !end)
+			{
+				logEvent('(Simulation) Missing start and end points!');
+				return;
+			}
+			
+			////////
+			// Initialization
+			// before performing simulation
+			// reset state of all sensor nodes
+			// Scan through the grid until we find "sensor"
+			// And refill the batteries of the sensors, 
+			// without touching the direction set
+			for (let i = 0; i < rows; i++) {
+				for (let j = 0; j < cols; j++) {
+					if (grid[i][j] === "sensor") {
+						sensors[i][j] = [ sensors[i][j][0], 100 ]
+					}
+					else
+					{
+						sensors[i][j] = [ 0, 0 ]
+					}
+				}
+			}
+			
+			// target specific variables
+			let rotation_count = 0;
+			let previousMemory = JSON.stringify(memory);
+			const visitedCells = Array(rows).fill().map(() => Array(cols).fill(0));
+			visitedCells[start[0]][start[1]]= 1;
+			let current_position = [...start];
+			let current_rotation = direction;
+			let current_iteration = 0;
+
+			function getDeltas(direction)
+			{
+				if( direction < 0 )
+					direction = 360 + direction;
+
+				direction = direction % 360;
+
+				switch (direction) {
+					case 0: return [-1, 0];//'↑';
+					case 45: return [-1, 1];//'↗';
+					case 90: return [0, 1];//'→';
+					case 135: return [1, 1];//'↘';
+					case 180: return [1, 0];//'↓';
+					case 225: return [1, -1];//'↙';
+					case 270: return [0, -1];//'←';
+					case 315: return [-1, -1];//'↖';
+					default: return null;
+				}
+			}
+
+			// This is our Huerstic!
+			function getDistanceFromEndPoint(row, col) {
+				return Math.sqrt(Math.pow(row - end[0], 2) + Math.pow(col - end[1], 2));
+			}
+
+			function determineBestMoveTowardsEnd() {
+
+				function pathContainsCoordinate(path, coord) {
+					return path.some(point => point[0] === coord[0] && point[1] === coord[1]);
+				}
+
+				const forward = getDeltas(current_rotation);
+				const leftDir = getDeltas(current_rotation - 45);
+				const rightDir = getDeltas(current_rotation + 45);
+				const backward = getDeltas(current_rotation + 180);
+				const rotate = [0,0];
+
+				const path = runDijkstraOnMemory(current_position, end);
+
+				const moves = [
+					{ move: rotate, type: "rotate" },
+					{ move: forward, type: "forward" },
+					{ move: leftDir, type: "left" },
+					{ move: rightDir, type: "right" },
+					{ move: backward, type: "backward" }
+				];
+
+				let bestMove = null;
+				let minScore = Infinity;
+
+				for (const { move, type } of moves) {
+					const newRow = current_position[0] + move[0];
+					const newCol = current_position[1] + move[1];
+
+					if (isValidMove(newRow, newCol) && memory[newRow][newCol] === 1) {
+						const distance = getDistanceFromEndPoint(newRow, newCol);
+
+						// Discourage cells that we've visited!!!
+						const visitPenalty = visitedCells[newRow][newCol] ? 7 : 0 ;
+
+						// Prioritize cells that are part of the Dijkstra's path
+						const onPathBonus = pathContainsCoordinate(path, [newRow, newCol]) ? -100 : 0;
+
+						// rotates usually a good thing, flat bonus (TODO: actually check if scanning helps)
+						const rotationBonus = (type === "rotate" ) ? -15 : 0;
+
+						// Bonus for moving towards clear and unvisited cells
+						const unvisitedClearBonus = (memory[newRow][newCol] === 1 && !visitedCells[newRow][newCol]) ? -30 : 0;
+
+						const score = distance + visitPenalty + unvisitedClearBonus  + onPathBonus + rotationBonus;
+
+						// To DEBUG scoring
+						// logEvent(`min: ${minScore}, vs ${type} w/ ${score}: ${distance} + ${visitPenalty} + ${unvisitedClearBonus}  + ${onPathBonus} + ${rotationBonus}`)
+						if (score < minScore) {
+							minScore = score;
+							bestMove = { move, type };
+						}
+					}
+				}
+
+				return bestMove;
+			}
+
+			// TODO: Gotta finish this!
+			function wouldRotationRevealNewInfo() {
+				const rotatedDirection = (current_rotation + 45) % 360;
+				const rotatedForward = getDeltas(rotatedDirection);
+				let scanRow = current_position[0] + rotatedForward[0];
+				let scanCol = current_position[1] + rotatedForward[1];
+
+				// perform the fake scan!
+				return false;
+			}
+
+			function isValidMove(row, col) {
+				// Check if the move is within the grid and doesn't lead to an obstacle
+				return col >= 0 && row >= 0 && col < cols && row < rows && memory[row][col] !== 0;
+			}
+
+			function performMove(move) {
+				// This function will perform the move and update the robot's position and direction
+				if(move.type === 'rotate')
+				{
+					current_rotation = (current_rotation + 45) % 360;
+					rotation_count++;
+				}
+				else
+				{
+					current_position[0] += move.move[0];
+					current_position[1] += move.move[1];
+					rotation_count = 0;
+				}
+				visitedCells[current_position[0]][current_position[1]] += 1;
+
+				// if the move was right or left steering, apply the rotation change
+				if( move.type === 'right')
+				{
+					current_rotation = (current_rotation + 45) % 360;
+				}
+				else if( move.type === 'left' )
+				{
+					current_rotation = ((current_rotation - 45) < 0 ? 360 - 45 : current_rotation - 45) % 360;
+				}
+
+				const cell = document.querySelector(`.cell[data-row="${current_position[0]}"][data-col="${current_position[1]}"]`);
+				cell.innerHTML = getArrowForDirection(current_rotation);
+			}
+
+			function renderMemory() {
+				// This function can visualize the memory on the grid for debugging purposes
+				for (let i = 0; i < rows; i++) {
+					for (let j = 0; j < cols; j++) {
+						const cell = document.querySelector(`.cell[data-row="${i}"][data-col="${j}"]`);
+						if( visitedCells[i][j] > 0 && !(end[0] === i && end[1] === j) )
+						{
+							// means we've visited
+							cell.style.backgroundColor = 'blue';
+						}
+						// else if (memory[i][j] === 1) 
+						// {
+						// 	// 1 means open cell
+						// 	cell.style.backgroundColor = 'purple';
+						// } 
+						// else if (memory[i][j] === 0) 
+						// {
+						// 	// 0 means blocked cell
+						// 	cell.style.opacity = 0.5;
+						// }
+					}
+				}
+			}
+
+			function runDijkstraOnMemory(start, end) {
+				const KNOWN_PATH_COST = 1;
+				const UNKNOWN_PATH_COST = 10; // This can be adjusted based on how much you want to prioritize known paths.
+
+				const distance = Array(rows).fill().map(() => Array(cols).fill(Infinity));
+				const visited = Array(rows).fill().map(() => Array(cols).fill(false));
+				const previous = Array(rows).fill().map(() => Array(cols).fill(null));
+				const queue = [[...start, 0]];
+
+				distance[start[0]][start[1]] = 0;
+
+				while (queue.length) {
+					queue.sort((a, b) => a[2] - b[2]);
+					const [row, col, d] = queue.shift();
+
+					if (visited[row][col]) continue;
+					visited[row][col] = true;
+
+					for (const [dr, dc] of [[0, 1], [1, 0], [0, -1], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]]) {
+						const nc = col + dc;
+						const nr = row + dr;
+
+						if (nc >= 0 && nr >= 0 && nc < cols && nr < rows && !visited[nr][nc] && (memory[nr][nc] === 1 || memory[nr][nc] === 2)) {
+							// Determine the cost of the move based on memory
+							const moveCost = (memory[nr][nc] === 1) ? KNOWN_PATH_COST : UNKNOWN_PATH_COST;
+							const newDist = d + moveCost; // Use the moveCost here
+							if (newDist < distance[nr][nc]) {
+								distance[nr][nc] = newDist;
+								previous[nr][nc] = [row, col];
+								queue.push([nr, nc, newDist]);
+							}
+						}
+					}
+				}
+
+				// Backtrack to find the path
+				let path = [];
+				let current = end;
+				while (current) {
+					path.unshift(current);
+					current = previous[current[0]][current[1]];
+				}
+
+				// If the start cell is not part of the path, then no path exists
+				if (path[0][0] !== start[0] || path[0][1] !== start[1]) {
+					return [];
+				}
+
+				return path;
+			}
+
+
+			// Every Iteration/Time Step, we'll start by
+			// Figuring out where the target will move to
+			// It's assumed that the target starts off 'concealed'
+			// Once Target has updated, each sensor then has a 
+			// 	- chance to turn on 
+			//  - search for the target using one of 2 sensors
+			//  	1. A Camera based search (a wide range, with a low accuracy sensor, high power usage)
+			//      2. Laser Based Search (a narrow, but precise detection, low power usage)
+			// 	If the target is detected, energy is spent relaying the message to
+			//  a server, using some energy. In some scenarios, the server also
+			//  commands the sensors locally too, shutting off other sensors (or reducing)
+			//  the turn on chance as needed.
+			//  There are three broad scenarios:
+			//  1. No Supervision Control: each sensor only randomly turns on
+			//  2. Clusting Control w/ Camera Only (based on the research paper)
+			//  3. Clustering Control w/ both sensor fusion (using quality of tracking metric)
+			while(true) {
+				
+				current_iteration++;
+				////////////////////
+				// Target Update!!!
+				////////////////////
+				previousMemory = JSON.stringify(memory);
+
+				// 0. Update memory with infomation based on the three sensors
+				const forward = getDeltas( current_rotation );
+				const leftDir = getDeltas( current_rotation - 45 );  // 45 degrees to the left
+				const rightDir = getDeltas( current_rotation + 45 );  // 45 degrees to the right
+
+				// Scan straight ahead
+				scanAhead(current_position[1], current_position[0], forward[1], forward[0]);
+				// Scan to the left
+				scanAhead(current_position[1], current_position[0], leftDir[1], leftDir[0]);
+				// Scan to the right
+				scanAhead(current_position[1], current_position[0], rightDir[1], rightDir[0]);
+
+				renderMemory();
+
+				// 1. Determine the best possible move based on the robot's current direction
+				let move = determineBestMoveTowardsEnd();
+
+				// 2. Check if the robot has rotated 8 times without gaining new information
+				if (rotation_count >= 8 && previousMemory === JSON.stringify(memory)) {
+					logEvent('(Simulation) Exiting simulation as no movements after 8 rotations.');
+					break;
+				}
+
+				// 3. Check if the robot has reached the end point
+				if (current_position[0] === end[0] && current_position[1] === end[1]) {
+					logEvent(`(Simulation) Exiting Simulation, target has reached the goal in ${current_iteration} steps!`);
+					const memoryString = '[' + memory.map(row => JSON.stringify(row)).join(',\n') + ']';
+					const blob = new Blob([memoryString], { type: "text/plain;charset=utf-8" });
+					const a = document.createElement('a');
+					a.href = URL.createObjectURL(blob);
+
+					const currentTime = new Date();
+					const timestamp = currentTime.toLocaleTimeString();
+
+					a.download = `Memory_${timestamp}.json`;
+					a.textContent = "Download";
+
+					logEvent(`(Simulation) Final memory exported as ${a.download}->`, a);
+					break;
+				}
+
+				// 4. Perform the move or attempt a rotation
+				if (move) {
+					const memoryString = '[' + memory.map(row => JSON.stringify(row)).join(',\n') + ']';
+					const blob = new Blob([memoryString], { type: "text/plain;charset=utf-8" });
+					const a = document.createElement('a');
+					a.href = URL.createObjectURL(blob);
+
+					const currentTime = new Date();
+					const timestamp = currentTime.toLocaleTimeString();
+
+					a.download = `Memory_${timestamp}.json`;
+					a.textContent = "Download";
+					logEvent(`iteration ${current_iteration}: ${current_position.slice().reverse()}, ${current_rotation}, next move: ${move.type}, memory dump ->`,a);
+					performMove(move);
+				}
+
+				////////////////////
+				// Sensors Update!!!
+				////////////////////
+			}
+		}
+
+		function getArrowForDirection(direction) {
+			switch (direction) {
+				case 0: return '↑';
+				case 45: return '↗';
+				case 90: return '→';
+				case 135: return '↘';
+				case 180: return '↓';
+				case 225: return '↙';
+				case 270: return '←';
+				case 315: return '↖';
+				default: return '';
+			}
+		}
+
+		function logEvent(message, link_item) {
+			const currentTime = new Date();
+			const timestamp = currentTime.toLocaleTimeString();
+
+			const logList = document.querySelector('#log ul');
+			const listItem = document.createElement('li');
+			listItem.textContent = `[${timestamp}] ${message}`;
+			
+			logList.appendChild(listItem);
+			if( link_item ) listItem.appendChild(link_item);
+
+			const logContainer = document.getElementById('log');
+			logContainer.scrollTop = logContainer.scrollHeight;
+		}
+
+		function toggleCell(i, j) {
+			// Create mutual exclusion of start cell and end cell
+			if (start && start[0] === i && start[1] === j) {
+				// user just clicked on the start cell (again)
+				direction = (direction + 45) % 360;
+
+				logEvent(`Updated start direction to ${direction}`);
+				renderGrid();
+				return;
+			}
+			if (end && end[0] === i && end[1] === j) {
+				// User just clicked end again
+				end = null;
+				logEvent(`User removed end/goal`);
+				renderGrid();
+				return;
+			}
+
+			// Assign the cell to the correct type
+			if (!start) {
+				start = [i, j];
+				logEvent(`User set start to (${j}, ${i})`);
+			} else if (!end) {
+				end = [i, j];
+				logEvent(`User set end/goal to (${j},${i})`);
+			} else {
+				grid[i][j] = grid[i][j] === 1 ? 0 : 1;
+			}
+			renderGrid();
+		}
+
+		function generateObstacles(percentage) {
+			for (let i = 0; i < rows; i++) {
+				for (let j = 0; j < cols; j++) {
+					if
+					(
+						grid[i][j] === 1 && Math.random() < percentage
+					) 
+					{
+						grid[i][j] = 0;
+					}
+				}
+			}
+			logEvent(`User generated random map with ${percentage*100}% Obstacles`);
+			renderGrid();
+		}
+
+		function generateSensors() {
+			const sensor_spacing = 10;
+			const possibleDirections = [0, 45, 90, 135, 180, 225, 270, 315];
+			let last_sensor = 0;
+			for (let i = 0; i < rows; i++) 
+			{
+				for (let j = 0; j < cols; j++)
+				{
+					last_sensor--;
+
+					if ( last_sensor < 0 && grid[i][j] === 1 )
+					{
+						const randomIndex = Math.floor(Math.random() * possibleDirections.length);
+						const direction = possibleDirections[randomIndex];
+
+						grid[i][j] = 'sensor';
+						sensors[i][j][0] = direction;
+						last_sensor = sensor_spacing;
+					}
+				}
+			}
+			logEvent(`User generated grid of sensors`);
+			renderGrid();
+		}
+
+		document.getElementById('findPath').onclick = findPath;
+
+		const directions = [[0, 1], [1, 0], [0, -1], [-1, 0], [-1, -1], [1, 1], [-1, 1], [1, -1]];
+
+		function findPath() {
+			if (!start || !end) {
+				logEvent('(Dijkstra) Please set both start and end points.');
+				return;
+			}
+
+			const distance = Array(rows).fill().map(() => Array(cols).fill(Infinity));
+			const visited = Array(rows).fill().map(() => Array(cols).fill(false));
+			const queue = [[...start, 0]];
+
+			distance[start[0]][start[1]] = 0;
+
+			while (queue.length) {
+				queue.sort((a, b) => a[2] - b[2]);
+				const [row, col, d] = queue.shift();
+
+				if (visited[row][col]) continue;
+				visited[row][col] = true;
+
+				for (const [drow, dcol] of directions) {
+					const nrow = row + drow;
+					const ncol = col + dcol;
+
+					if (nrow >= 0 && ncol >= 0 && nrow < rows && ncol < cols && !visited[nrow][ncol] && grid[nrow][ncol] !== 0) {
+						const newDist = d + 1;
+						if (newDist < distance[nrow][ncol]) {
+							distance[nrow][ncol] = newDist;
+							queue.push([nrow, ncol, newDist]);
+						}
+					}
+				}
+			}
+
+			if (distance[end[0]][end[1]] === Infinity) {
+				logEvent('(Dijkstra) No path found!!!!');
+			} else {
+				logEvent('(Dijkstra) Highlighting Path Found! Shortest path length: ' + distance[end[0]][end[1]]);
+				backtrackPath(start, end, distance);
+			}
+		}
+
+		function backtrackPath(start, end, distance) {
+			let [row, col] = end;
+			while (row !== start[0] || col !== start[1]) {
+				let minDist = Infinity;
+				let nextStep = null;
+				for (const [drow, dcol] of directions) {
+					const nrow = row + drow;
+					const ncol = col + dcol;
+					if (nrow >= 0 && ncol >= 0 && nrow < rows && ncol < cols && distance[nrow][ncol] < minDist) {
+						minDist = distance[nrow][ncol];
+						nextStep = [nrow, ncol];
+					}
+				}
+				[row, col] = nextStep;
+
+				const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+				cell.style.backgroundColor = 'yellow';
+			}
+		}
+
+		document.getElementById('exportLog').onclick = function() {
+			const logEntries = Array.from(document.querySelectorAll('#log li'));
+			const logText = logEntries.map(entry => entry.textContent).join('\n');
+			const blob = new Blob([logText], { type: "text/plain;charset=utf-8" });
+			const a = document.createElement('a');
+			a.href = URL.createObjectURL(blob);
+
+			const currentTime = new Date();
+			const timestamp = currentTime.toLocaleTimeString();
+
+			a.download = `${timestamp}.log`;
+			a.click();
+		};
+
+		document.getElementById('exportGrid').onclick = function() {
+			const gridStateString = '[\n' + grid.map(row => JSON.stringify(row)).join(',\n') + '\n]';
+			const blob = new Blob([gridStateString], { type: "text/plain;charset=utf-8" });
+			const a = document.createElement('a');
+			a.href = URL.createObjectURL(blob);
+
+			const currentTime = new Date();
+			const timestamp = currentTime.toLocaleTimeString();
+
+			a.download = `${timestamp}.grid`;
+			a.click();
+		};
+
+		document.getElementById('importGrid').onclick = function() {
+			const fileInput = document.getElementById('fileInput');
+			const file = fileInput.files[0];
+			if (file) {
+				const reader = new FileReader();
+				reader.onload = function(event) {
+					try {
+						const importedGrid = JSON.parse(event.target.result);
+						if (Array.isArray(importedGrid) && importedGrid.length === rows && importedGrid[0].length === cols) {
+							grid = importedGrid;
+							renderGrid();
+							logEvent(`Grid state imported successfully from ${file.name}`);
+						} else {
+							logEvent("Invalid grid state");
+						}
+					} catch (error) {
+						logEvent("Error parsing grid state");
+					}
+				};
+				reader.readAsText(file);
+			} else {
+				logEvent("No file selected");
+			}
+		};
+
+		document.getElementById('startSimulation').onclick = startSimulation;
+		document.getElementById('setDefaultStartEnd').onclick = setDefaultStartEnd;
+		document.getElementById('reset').onclick = resetGrid;
+		document.getElementById('resetStart').onclick = resetStart;
+		document.getElementById('resetEnd').onclick = resetEnd;
+
+		function resetGrid() {
+			grid = Array(rows).fill().map(() => Array(cols).fill(1));
+			start = null;
+			end = null;
+			logEvent("Removed everything!");
+			renderGrid();
+		}
+
+		function resetStart() {
+			if(start)
+				logEvent("Removed start point & orientation");
+			direction = 0;
+			start = null;
+			renderGrid();
+		}
+
+		function resetEnd() {
+			if(end)
+				logEvent("Removed end point / goal");
+			end = null;
+			renderGrid();
+		}
+
+		function setDefaultStartEnd() {
+			direction = 0;
+			start = [5, 5];
+			end = [28, 38];
+
+			logEvent("Defaulting start and end points set to (5,5) and (38,28)");
+			
+			renderGrid();
+		}
+
+		renderGrid();
+		logEvent("Finished Init! Go ahead and click cells or control buttons")
+	</script>
+</body>
+
+</html>
