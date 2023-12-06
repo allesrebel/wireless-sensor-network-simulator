@@ -136,8 +136,8 @@
 			}
 		}
 
-		// Function to handle scanning for the target for this particular
-		// Sensor Node
+		// Function to handle scanning for the target's sensors
+		// (assuming they are a robot)
 		function scanAhead(x, y, dx, dy) {
 			while (true) {
 				x += dx;
@@ -400,6 +400,48 @@
 				return path;
 			}
 
+			// Sensor Suite!!
+
+			// High precsion, low width
+			// but can work through obstacles
+			function laserScan(x, y, dx, dy) {
+				while (true) {
+					x += dx;
+					y += dy;
+
+					// We're scanning off screen
+					if (x < 0 || x >= cols || y < 0 || y >= rows) {
+						// Out of bounds
+						return false;
+					}
+					
+					// Current Position refers to the Target
+					if (current_position[0] === y && current_position[1] === x) {
+						return true;
+					}
+				}
+				return false
+			}
+
+			// High precsion, low width
+			// but can work through obstacles
+			function cameraScan(x, y, dx, dy) {
+				while (true) {
+					x += dx;
+					y += dy;
+
+					if (x < 0 || x >= cols || y < 0 || y >= rows) {
+						// Out of bounds
+						return false;
+					}
+					
+					// Current Position refers to the Target
+					if (current_position[0] === y && current_position[1] === x) {
+						return true;
+					}
+				}
+				return false
+			}
 
 			// Every Iteration/Time Step, we'll start by
 			// Figuring out where the target will move to
@@ -485,6 +527,52 @@
 				////////////////////
 				// Sensors Update!!!
 				////////////////////
+
+				const sensor_turn_on_chance = 0.5;
+				const radar_power_draw = 5;
+				const radio_tx_draw = 3;
+
+				// Iterate through each sensor, and depending on the scenario
+				// we'll do one of the 3 cases above
+				for (let i = 0; i < rows; i++) 
+				{
+					for (let j = 0; j < cols; j++) 
+					{
+						// Case 1:
+						// assume no control case, there's a chance for the sensor to turn on
+						// and utilize some power to perform a scan via sensor_turn_on_chance
+						if (grid[i][j] === "sensor") 
+						{
+							logEvent(`sensor at (${j},${i}) currently has ${sensors[i][j][1]} power`);
+							const sensor_dir = sensors[i][j][0];
+
+							// Chance of using Laser
+							if( Math.random() < sensor_turn_on_chance && sensors[i][j][1] >= radar_power_draw )
+							{
+								sensors[i][j][1] -= radar_power_draw;
+
+								// check if we hit the target
+								const sensor_laser_scan_dir = getDeltas( sensor_dir );
+
+								// Scan straight ahead
+								if( laserScan(j, i, sensor_laser_scan_dir[1], sensor_laser_scan_dir[0]) )
+								{
+									// target detected
+									if(sensors[i][j][1] >= radio_tx_draw ) 
+									{
+										sensors[i][j][1] -= radio_tx_draw;
+										logEvent(`sensor at (${j},${i}) detected target w/ laser, transmitted to server`);
+									}
+									else
+										logEvent(`sensor at (${j},${i}) detected target w/ laser, but died`);
+								}
+
+								logEvent(`sensor at (${j},${i}) now has ${sensors[i][j][1]} power left`);
+							}
+						}
+					}
+				}
+
 			}
 		}
 
@@ -565,7 +653,7 @@
 		}
 
 		function generateSensors() {
-			const sensor_spacing = 10;
+			const sensor_spacing = 50;
 			const possibleDirections = [0, 45, 90, 135, 180, 225, 270, 315];
 			let last_sensor = 0;
 			for (let i = 0; i < rows; i++) 
