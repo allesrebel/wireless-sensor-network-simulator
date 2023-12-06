@@ -425,19 +425,43 @@
 
 			// High precsion, low width
 			// but can work through obstacles
-			function cameraScan(x, y, dx, dy) {
-				while (true) {
+			function cameraScan(x, y, dx, dy) 
+			{
+				// Define the relative positions of all adjacent cells
+				const adjacentDeltas = [
+					[-1, 0],  // North
+					[-1, 1],  // Northeast
+					[0, 1],   // East
+					[1, 1],   // Southeast
+					[1, 0],   // South
+					[1, -1],  // Southwest
+					[0, -1],  // West
+					[-1, -1]  // Northwest
+				];
+
+				const camera_range = 3;
+
+				for (let range = 0; range < camera_range; range++) 
+				{ 
 					x += dx;
 					y += dy;
 
-					if (x < 0 || x >= cols || y < 0 || y >= rows) {
-						// Out of bounds
+					if (x < 0 || x >= cols || y < 0 || y >= rows ) 
+					{
+						// Out of bounds or blocked by obstacle
 						return false;
 					}
 					
-					// Current Position refers to the Target
-					if (current_position[0] === y && current_position[1] === x) {
-						return true;
+					// Check each adjacent cell
+					for (const [dy, dx] of adjacentDeltas) {
+
+						const adjacentY = y + dy;
+						const adjacentX = x + dx;
+						
+						if ( grid[y][x] === 1 && adjacentY === current_position[0] && adjacentX === current_position[1] ) 
+						{
+							return true;
+						}
 					}
 				}
 				return false
@@ -530,6 +554,7 @@
 
 				const sensor_turn_on_chance = 0.5;
 				const radar_power_draw = 5;
+				const camera_power_draw = 8;
 				const radio_tx_draw = 3;
 
 				// Iterate through each sensor, and depending on the scenario
@@ -538,7 +563,7 @@
 				{
 					for (let j = 0; j < cols; j++) 
 					{
-						// Case 1:
+						// Case 1: either Laser OR Camera
 						// assume no control case, there's a chance for the sensor to turn on
 						// and utilize some power to perform a scan via sensor_turn_on_chance
 						if (grid[i][j] === "sensor") 
@@ -546,25 +571,49 @@
 							logEvent(`sensor at (${j},${i}) currently has ${sensors[i][j][1]} power`);
 							const sensor_dir = sensors[i][j][0];
 
-							// Chance of using Laser
-							if( Math.random() < sensor_turn_on_chance && sensors[i][j][1] >= radar_power_draw )
+							// // Chance of using Laser/Camera
+							// if( Math.random() < sensor_turn_on_chance && sensors[i][j][1] >= radar_power_draw )
+							// {
+							// 	sensors[i][j][1] -= radar_power_draw;
+
+							// 	// check if we hit the target
+							// 	const sensor_laser_scan_dir = getDeltas( sensor_dir );
+
+							// 	// Scan straight ahead
+							// 	if( laserScan(j, i, sensor_laser_scan_dir[1], sensor_laser_scan_dir[0]) )
+							// 	{
+							// 		// target detected
+							// 		if(sensors[i][j][1] >= radio_tx_draw ) 
+							// 		{
+							// 			sensors[i][j][1] -= radio_tx_draw;
+							// 			logEvent(`sensor at (${j},${i}) detected target w/ laser, transmitted to server`);
+							// 		}
+							// 		else
+							// 			logEvent(`sensor at (${j},${i}) detected target w/ laser, but died`);
+							// 	}
+
+							// 	logEvent(`sensor at (${j},${i}) now has ${sensors[i][j][1]} power left`);
+							// }
+
+							// Chance of using Camera
+							if( Math.random() < sensor_turn_on_chance && sensors[i][j][1] >= camera_power_draw )
 							{
-								sensors[i][j][1] -= radar_power_draw;
+								sensors[i][j][1] -= camera_power_draw;
 
 								// check if we hit the target
-								const sensor_laser_scan_dir = getDeltas( sensor_dir );
+								const camera_scan_dir = getDeltas( sensor_dir );
 
 								// Scan straight ahead
-								if( laserScan(j, i, sensor_laser_scan_dir[1], sensor_laser_scan_dir[0]) )
+								if( laserScan(j, i, camera_scan_dir[1], camera_scan_dir[0]) )
 								{
 									// target detected
 									if(sensors[i][j][1] >= radio_tx_draw ) 
 									{
 										sensors[i][j][1] -= radio_tx_draw;
-										logEvent(`sensor at (${j},${i}) detected target w/ laser, transmitted to server`);
+										logEvent(`sensor at (${j},${i}) detected target w/ camera, transmitted to server`);
 									}
 									else
-										logEvent(`sensor at (${j},${i}) detected target w/ laser, but died`);
+										logEvent(`sensor at (${j},${i}) detected target w/ camera, but died`);
 								}
 
 								logEvent(`sensor at (${j},${i}) now has ${sensors[i][j][1]} power left`);
